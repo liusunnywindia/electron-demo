@@ -6,6 +6,14 @@ import { plugins } from './webpack.plugins';
 rules.push({
   test: /\.css$/,
   use: [{ loader: 'style-loader' }, { loader: 'css-loader' }],
+},{
+  test: /\.less$/i,
+  use: [
+    // compiles Less to CSS
+    "style-loader",
+    "css-loader",
+    "less-loader",
+  ],
 });
 
 export const rendererConfig: Configuration = {
@@ -14,6 +22,6 @@ export const rendererConfig: Configuration = {
   },
   plugins,
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css','.less'],
   },
 };

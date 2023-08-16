@@ -1,19 +1,68 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import { Routes, Route, Outlet, Link } from "react-router-dom";
+import PaintPanel from "./paint";
+import TestPanel from './test'
 
-const App = () => {
-const [data,setData] = useState([])
-const [weather,setWeather] = useState({text:'',windDir:''})
+export default function App() {
+  return (
+    <div>
+      <h1>Basic Example</h1>
 
-useEffect(()=>{
-    axios({url:'https://devapi.qweather.com/v7/weather/now?location=101010100&key=fe8bd0c7f6db40b4be6e9d7266bfd3b4',method:'get'}).then(res=>{
-        console.log(res.data.now)
-        setWeather(res.data.now)
-    })
-},[])
-    return (
-        <div>今天天气:{weather?.text} {weather?.windDir} </div>
-    )
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<PaintPanel />} />
+          <Route path="test" element={<TestPanel />} />
+
+          {/* Using path="*"" means "match anything", so this route
+                acts like a catch-all for URLs that we don't have explicit
+                routes for. */}
+          {/* <Route path="*" element={<NoMatch />} /> */}
+        </Route>
+      </Routes>
+    </div>
+  );
 }
 
-export default App;
+function Layout() {
+  return (
+    <div>
+      {/* A "layout route" is a good place to put markup you want to
+          share across all the pages on your site, like navigation. */}
+      <nav>
+        <ul>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/about">paint</Link>
+          </li>
+          <li>
+            <Link to="/test">test</Link>
+          </li>
+          {/* <li>
+            <Link to="/nothing-here">Nothing Here</Link>
+          </li> */}
+        </ul>
+      </nav>
+
+      <hr />
+
+      {/* An <Outlet> renders whatever child route is currently active,
+          so you can think about this <Outlet> as a placeholder for
+          the child routes we defined above. */}
+      <Outlet />
+    </div>
+  );
+}
+
+function Home() {
+  return (
+    <div>
+         <video src="
+https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" width="200px" height="200px"></video>
+    </div>
+  );
+}
+
+
+

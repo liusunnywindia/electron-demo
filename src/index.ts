@@ -18,6 +18,7 @@ const createWindow = (): void => {
     width: 800,
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+      nodeIntegration:true
     },
   });
 
@@ -29,19 +30,35 @@ const createWindow = (): void => {
 
   ipcMain.on('screenshot:capture',(e,value)=>{
     desktopCapturer.getSources({types:['window'],thumbnailSize:{width:1920,height:1080}}).then(sources=>{
-      let image = sources[0].thumbnail.toDataURL();
-      mainWindow.webContents.send('screenshot:capture',image)
+      let imgArr:any = []
+      sources.map(item=>{
+        if(item.thumbnail){
+          imgArr.push(item.thumbnail.toDataURL())
+        }
+      })
+      // let image = sources[0].thumbnail.toDataURL();
+      mainWindow.webContents.send('screenshot:capture',imgArr)
     })
   })
-desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
-  for (const source of sources) {
-    if (source.name.includes('my-react-two')) {
-      console.log(source.name,888)
-      mainWindow.webContents.send('SET_SOURCE', source.id)
-      return
-    }
-  }
-})
+  
+  ipcMain.on('videoShot',(e,value)=>{
+    desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
+      console.log(sources,'sources')
+      for (const source of sources) {
+        if (source.name.includes('my-react-two')) {
+          // console.log(source.name,888)
+          mainWindow.webContents.send('videoShot', source.id)
+          return
+        }
+      }
+    })
+  })
+
+  // 监听停止录制
+  ipcMain.on('stopVideo',(event,message)=>{
+    mainWindow.webContents.send('stopVideo',message)
+  })
+
 };
 
 // This method will be called when Electron has finished

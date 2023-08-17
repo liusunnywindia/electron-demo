@@ -1,15 +1,18 @@
+import { useState } from "react";
 import { Routes, Route, Outlet, Link } from "react-router-dom";
 import PaintPanel from "./paint";
 import TestPanel from './test'
+import HomePanel from './Home'
 
 export default function App() {
+
   return (
     <div>
       <h1>Basic Example</h1>
 
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route index element={<HomePanel />} />
           <Route path="about" element={<PaintPanel />} />
           <Route path="test" element={<TestPanel />} />
 
@@ -55,14 +58,7 @@ function Layout() {
   );
 }
 
-function Home() {
-  return (
-    <div>
-         <video src="
-https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.webm" width="200px" height="200px"></video>
-    </div>
-  );
-}
+
 
 
 

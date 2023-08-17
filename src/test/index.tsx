@@ -60,7 +60,7 @@ const App = () => {
         const arr = Array.from(items);
         let blob: any;
         if (length > 0) {
-            arr.forEach(itm => {
+            arr.forEach((itm:any) => {
                 if (itm.type.startsWith("image")) {
                     blob = itm.getAsFile();
                 }
@@ -69,15 +69,16 @@ const App = () => {
             if (blob) {
                 console.log(blob, 'blob')
                 if (blob.size / 1024 / 1024 >= 10) {
-                    console.warning('图片大小不能超过10M哦')
+                    console.log('图片大小不能超过10M哦')
                     return
                 }
                 const formData = new FormData();
                 formData.append("file", blob);
                 const reader = new FileReader();
                 reader.readAsDataURL(blob);
-                reader.onload = function (e) {
-                    setImageUrl(e.target.result);
+                reader.onload = function (e:any) {
+                    console.log(e,'e')
+                    setImageUrl(e?.target?.result||'');
                 };
             }
         }

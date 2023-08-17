@@ -1,40 +1,50 @@
+// @ts-nocheck
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 // 在 preload 脚本中。
-const { ipcRenderer,contextBridge } = require('electron')
+const { ipcRenderer,contextBridge ,remote,shell} = require('electron')
+// const fs = require('fs');
+const fs = remote.require('fs');
+ ipcRenderer.on('stopVideo', async (event, value) => {
+  let blobNew = dataURLtoBlob(value)
+    const blob = new Blob([blobNew], { type: "video/webm" });
+     const buffer = Buffer.from(await blob.arrayBuffer());          
+            fs.writeFile('test.webm', buffer, () => {
+            shell.openPath('test.webm');
+              // mediaRecorder = null;
+              // chunks = []
+            });
 
-ipcRenderer.on('SET_SOURCE', async (event, sourceId) => {
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: { mandatory: { chromeMediaSource: 'desktop' }},
-      video: {
-        mandatory: {
-          chromeMediaSource: 'desktop',
-          chromeMediaSourceId: sourceId
-        }
-      }
-    })
-    handleStream(stream)
-  } catch (e) {
-    handleError(e)
-  }
 })
 
-function handleStream (stream) {
-  const video = document.querySelector('video')
-  console.log(video,stream,'stream')
-  video.src = stream
-  video.onloadedmetadata = (e) => video.play()
+function dataURLtoBlob (dataURL) {
+  var BASE64_MARKER = ';base64,';
+  var parts;
+  var contentType;
+  var raw;
+  if (dataURL.indexOf(BASE64_MARKER) === -1) {
+    parts = dataURL.split(',');
+    contentType = parts[0].split(':')[1];
+    raw = decodeURIComponent(parts[1]);
+    return new Blob([raw], {type: contentType});
+  }
+  parts = dataURL.split(BASE64_MARKER);
+  contentType = parts[0].split(':')[1];
+  raw = window.atob(parts[1]);
+  var rawLength = raw.length;
+  var uInt8Array = new Uint8Array(rawLength);
+  for (var i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+  return new Blob([uInt8Array], {type: contentType});
 }
 
-function handleError (e) {
-  console.log(e)
-}
+
 
 contextBridge.exposeInMainWorld("electron", {
   ipcRenderer: {
     ...ipcRenderer,
     on: ipcRenderer.on.bind(ipcRenderer),
     removeListener: ipcRenderer.removeListener.bind(ipcRenderer),
-  },
+  }
 });

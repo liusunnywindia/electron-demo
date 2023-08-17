@@ -16,11 +16,6 @@ ipcRenderer.on('stopVideo', async (event, value) => {
   a.setAttribute('href', url);
   a.setAttribute('target', '_blank');
   a.click()
-  // fs.writeFile('test.webm', buffer, () => {
-  // shell.openPath('test.webm');
-  //   // mediaRecorder = null;
-  //   // chunks = []
-  // });
 
 })
 

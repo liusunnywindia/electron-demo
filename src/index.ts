@@ -45,11 +45,11 @@ const createWindow = (): void => {
     desktopCapturer.getSources({ types: ['window', 'screen'] }).then(async sources => {
       console.log(sources,'sources')
       for (const source of sources) {
-        if (source.name.includes('my-react-two')) {
+        // if (source.name.includes('my-react-two')) {
           // console.log(source.name,888)
           mainWindow.webContents.send('videoShot', source.id)
           return
-        }
+        //}
       }
     })
   })
